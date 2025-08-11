@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -64,6 +65,42 @@ func Get(key, defaultValue string) string {
 		return value
 	}
 	return defaultValue
+}
+
+// GetBool retrieves a boolean value from environment variables.
+// Returns defaultValue if the key is not found or cannot be parsed.
+// Accepted true values: "1", "t", "T", "true", "TRUE", "True"
+// Accepted false values: "0", "f", "F", "false", "FALSE", "False"
+func GetBool(key string, defaultValue bool) bool {
+	val, exists := os.LookupEnv(key)
+	if !exists {
+		return defaultValue
+	}
+
+	switch strings.ToLower(val) {
+	case "1", "t", "true":
+		return true
+	case "0", "f", "false":
+		return false
+	default:
+		return defaultValue
+	}
+}
+
+// GetInt retrieves an integer value from environment variables.
+// Returns defaultValue if the key is not found or cannot be parsed.
+func GetInt(key string, defaultValue int) int {
+	val, exists := os.LookupEnv(key)
+	if !exists {
+		return defaultValue
+	}
+
+	intVal, err := strconv.Atoi(val)
+	if err != nil {
+		return defaultValue
+	}
+
+	return intVal
 }
 
 // MustGet returns the value of the environment variable or panics if not found
