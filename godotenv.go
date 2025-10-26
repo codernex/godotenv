@@ -1,5 +1,5 @@
 // env/env.go
-package env
+package godotenv
 
 import (
 	"bufio"
